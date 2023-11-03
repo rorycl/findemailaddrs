@@ -34,12 +34,7 @@ type address struct {
 // addresses with isDoNotReply true are omitted
 type addressMap map[string]address
 
-func (am addressMap) dump(path string) error {
-	f, err := os.Create(path)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
+func (am addressMap) dump(f *os.File) error {
 
 	// sort
 	keys := []string{}
@@ -49,7 +44,7 @@ func (am addressMap) dump(path string) error {
 	slices.Sort(keys)
 
 	// write out addresses
-	_, err = f.WriteString("name,email,colleague\n")
+	_, err := f.WriteString("name,email,colleague\n")
 	if err != nil {
 		return err
 	}

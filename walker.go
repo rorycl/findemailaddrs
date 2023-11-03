@@ -7,6 +7,8 @@ import (
 	"strings"
 )
 
+var counter int = 0
+
 // walkerEML is a custom file walker for eml files
 func walkerEML(path string, info os.FileInfo, err error) error {
 
