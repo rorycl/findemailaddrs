@@ -11,8 +11,11 @@ import (
 var am = addressMap{}
 
 // flags
-var directory = flag.String("d", "", "path to directory to start eml file search")
-var output = flag.String("o", "", "file to save output")
+var (
+	directory = flag.String("d", "", "path to directory to start eml file search")
+	output    = flag.String("o", "", "file to save output")
+	verbose   = flag.Bool("v", false, "verbose")
+)
 
 func main() {
 
@@ -62,4 +65,5 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Println("counter", counter)
+	fmt.Println("unique addresses", am.count())
 }

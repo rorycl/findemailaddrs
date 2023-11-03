@@ -26,6 +26,7 @@ type address struct {
 	name         string
 	email        string
 	seen         int
+	date         time.Time
 	colleague    bool
 	isDoNotReply bool // is a "do not reply" address
 }
@@ -33,6 +34,11 @@ type address struct {
 // addressMap keeps a map of unique addresses by lowercase email address
 // addresses with isDoNotReply true are omitted
 type addressMap map[string]address
+
+// count returns the number of unique addresses
+func (am addressMap) count() int {
+	return len(am)
+}
 
 func (am addressMap) dump(f *os.File) error {
 
@@ -50,7 +56,10 @@ func (am addressMap) dump(f *os.File) error {
 	}
 	for _, k := range keys {
 		v := am[k]
-		_, err := f.WriteString(fmt.Sprintf("%s,%s,%t\n", v.name, v.email, v.colleague))
+		_, err := f.WriteString(fmt.Sprintf(
+			"%s,%s,%s,%t\n",
+			v.name, v.email, v.date.Format("2006-02-01"), v.colleague,
+		))
 		if err != nil {
 			return err
 		}
@@ -93,10 +102,10 @@ func (e *EML) Parse() error {
 	m, err := eml.Parse(c)
 	if err != nil {
 		if strings.Contains(err.Error(), "multipart specified without boundary") {
-			return emlParseIgnoreError
+			return errors.Join(err, emlParseIgnoreError)
 		}
 		if strings.Contains(err.Error(), "invalid simpleAddr") {
-			return emlParseIgnoreError
+			return errors.Join(err, emlParseIgnoreError)
 		}
 		// this error condition is introduced at line 135 of
 		// eml/address.go
@@ -113,6 +122,7 @@ func (e *EML) Parse() error {
 		addr := address{
 			name:  a.Name(),
 			email: a.Email(),
+			date:  e.date,
 		}
 		if strings.Contains(strings.ToLower(addr.email), "donotreply") {
 			continue

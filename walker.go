@@ -12,14 +12,24 @@ var counter int = 0
 // walkerEML is a custom file walker for eml files
 func walkerEML(path string, info os.FileInfo, err error) error {
 
+	if *verbose && info.IsDir() {
+		fmt.Println("processing", info.Name())
+	}
+
 	if !info.IsDir() && strings.Contains(strings.ToLower(info.Name()), ".eml") {
 		e := EML{
 			name: info.Name(),
 			path: path,
 		}
+
+		// the main parsing of the email occurs here
 		err := e.Parse()
 		if err != nil {
 			if errors.Is(err, emlParseIgnoreError) {
+				if *verbose {
+					fmt.Println(" ", path)
+					fmt.Println("   ignoring eml parsing error", err)
+				}
 				return nil
 			} else {
 				fmt.Println(err)
@@ -38,6 +48,9 @@ func walkerEML(path string, info os.FileInfo, err error) error {
 				existing.seen++
 				if existing.name == "" && a.name != "" {
 					existing.name = a.name
+				}
+				if existing.date.Before(a.date) {
+					existing.date = a.date
 				}
 			} else {
 				am[email] = a
