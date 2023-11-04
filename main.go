@@ -10,14 +10,35 @@ import (
 // map of addresses to address struct
 var am = addressMap{}
 
+// default search file extension
+var searchSuffix = ".eml"
+
 // flags
 var (
 	directory = flag.String("d", "", "path to directory to start eml file search")
 	output    = flag.String("o", "", "file to save output")
+	suffix    = flag.String("s", searchSuffix, "file suffix to search for")
 	verbose   = flag.Bool("v", false, "verbose")
 )
 
+var usage = `%s -d <directory> -o <output> [-v] [-s ".ext"]
+
+Look for files with the default "%s" suffix or that optionally provided
+with the "-s" flag in the directory rooted at <directory> and extract
+the email addresses and associated names (where available) to <output>
+in tab separated format.
+
+Provide the -v flag for verbose output.
+
+Options:
+`
+
 func main() {
+
+	flag.Usage = func() {
+		fmt.Printf(usage, os.Args[0], searchSuffix)
+		flag.PrintDefaults()
+	}
 
 	flag.Parse()
 	if directory == nil {
@@ -29,6 +50,10 @@ func main() {
 		fmt.Printf("no output file provided")
 		flag.Usage()
 		os.Exit(1)
+	}
+
+	if *suffix != searchSuffix {
+		searchSuffix = *suffix
 	}
 
 	// check directory exists
@@ -55,7 +80,7 @@ func main() {
 	}
 	defer outputFile.Close()
 
-	err = filepath.Walk(*directory, walkerEML)
+	err = filepath.Walk(*directory, walkerFindEmails)
 	if err != nil {
 		fmt.Println("error: ", err)
 	}
@@ -64,6 +89,10 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	fmt.Println("counter", counter)
-	fmt.Println("unique addresses", am.count())
+
+	// stats
+	if *verbose {
+		fmt.Println("counter", counter)
+		fmt.Println("unique addresses", am.count())
+	}
 }

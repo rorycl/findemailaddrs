@@ -1,20 +1,21 @@
+// message
 package main
 
 import (
+	"encoding/csv"
 	"errors"
 	"fmt"
-	"io"
 	"os"
 	"slices"
 	"strings"
 	"time"
 
-	"github.com/sg3des/eml"
+	"github.com/mnako/letters"
 )
 
-// EML represents the data file and some content relating to an eml
-// email file
-type EML struct {
+// email represents the data file and some content relating to an email
+// message file
+type email struct {
 	name  string // normalised name
 	path  string // full path to file
 	addrs []address
@@ -31,6 +32,16 @@ type address struct {
 	isDoNotReply bool // is a "do not reply" address
 }
 
+// addressStringSlice is a slice of string for outputting to tab
+// separated formate
+func (a *address) stringSlice() []string {
+	colBool := "false"
+	if a.colleague {
+		colBool = "true"
+	}
+	return []string{a.name, a.email, a.date.Format("2006-01-02"), colBool}
+}
+
 // addressMap keeps a map of unique addresses by lowercase email address
 // addresses with isDoNotReply true are omitted
 type addressMap map[string]address
@@ -40,6 +51,7 @@ func (am addressMap) count() int {
 	return len(am)
 }
 
+// dump writes the address map to an export tsf file
 func (am addressMap) dump(f *os.File) error {
 
 	// sort
@@ -49,18 +61,17 @@ func (am addressMap) dump(f *os.File) error {
 	}
 	slices.Sort(keys)
 
+	writer := csv.NewWriter(f)
+	writer.Comma = '\t'
+
 	// write out addresses
-	_, err := f.WriteString("name,email,colleague\n")
+	err := writer.Write([]string{"name", "email", "updated", "colleague"})
 	if err != nil {
 		return err
 	}
 	for _, k := range keys {
 		v := am[k]
-		_, err := f.WriteString(fmt.Sprintf(
-			"%s,%s,%s,%t\n",
-			v.name, v.email, v.date.Format("2006-02-01"), v.colleague,
-		))
-		if err != nil {
+		if err := writer.Write(v.stringSlice()); err != nil {
 			return err
 		}
 	}
@@ -68,8 +79,8 @@ func (am addressMap) dump(f *os.File) error {
 
 }
 
-// String is a string representation of an EML message
-func (e EML) String() string {
+// String is a string representation of an email message
+func (e email) String() string {
 	r := fmt.Sprintf("%s (%s) :", e.name, e.path)
 	for _, a := range e.addrs {
 		if a.name == "" {
@@ -81,12 +92,12 @@ func (e EML) String() string {
 	return r
 }
 
-var emlParseIgnoreError error = errors.New("non fatal eml parsing error")
+var parseIgnoreError error = errors.New("handled parsing error")
 
-// parse an EML message using the eml module, catching errors
-func (e *EML) Parse() error {
+// parse an email message using letter , catching errors
+func (e *email) Parse() error {
 	if e == nil {
-		return errors.New("nil eml")
+		return errors.New("nil email provided")
 	}
 	if e.path == "" {
 		return errors.New("empty path provided")
@@ -95,33 +106,23 @@ func (e *EML) Parse() error {
 	if err != nil {
 		return fmt.Errorf("open err %w", err)
 	}
-	c, err := io.ReadAll(f)
+
+	m, err := letters.ParseEmail(f)
 	if err != nil {
-		return fmt.Errorf("reading err %w", err)
+		if strings.Contains(err.Error(), "letters.parsers.parseAddressListHeader") {
+			return errors.Join(parseIgnoreError, fmt.Errorf("parsing err %s %w", e.path, err))
+		}
+		return fmt.Errorf("parsing err %s %w", e.path, err)
 	}
-	m, err := eml.Parse(c)
-	if err != nil {
-		if strings.Contains(err.Error(), "multipart specified without boundary") {
-			return errors.Join(err, emlParseIgnoreError)
-		}
-		if strings.Contains(err.Error(), "invalid simpleAddr") {
-			return errors.Join(err, emlParseIgnoreError)
-		}
-		// this error condition is introduced at line 135 of
-		// eml/address.go
-		if strings.Contains(err.Error(), "invalid token length") {
-			return emlParseIgnoreError
-		}
-		return fmt.Errorf("eml err %w", err)
-	}
-	e.date = m.Date
-	allAddresses := m.From
-	allAddresses = append(allAddresses, m.To...)
-	allAddresses = append(allAddresses, m.Cc...)
+
+	e.date = m.Headers.Date
+	allAddresses := m.Headers.From
+	allAddresses = append(allAddresses, m.Headers.To...)
+	allAddresses = append(allAddresses, m.Headers.Cc...)
 	for _, a := range allAddresses {
 		addr := address{
-			name:  a.Name(),
-			email: a.Email(),
+			name:  a.Name,
+			email: a.Address,
 			date:  e.date,
 		}
 		if strings.Contains(strings.ToLower(addr.email), "donotreply") {

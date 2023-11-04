@@ -9,15 +9,18 @@ import (
 
 var counter int = 0
 
-// walkerEML is a custom file walker for eml files
-func walkerEML(path string, info os.FileInfo, err error) error {
+// walkerFindEmails is a custom file walker for eml files
+func walkerFindEmails(path string, info os.FileInfo, err error) error {
 
 	if *verbose && info.IsDir() {
-		fmt.Println("processing", info.Name())
+		fmt.Println("processing directory:", info.Name())
 	}
 
-	if !info.IsDir() && strings.Contains(strings.ToLower(info.Name()), ".eml") {
-		e := EML{
+	if !info.IsDir() && strings.Contains(strings.ToLower(info.Name()), searchSuffix) {
+		if *verbose {
+			fmt.Println("   file:", info.Name())
+		}
+		e := email{
 			name: info.Name(),
 			path: path,
 		}
@@ -25,10 +28,10 @@ func walkerEML(path string, info os.FileInfo, err error) error {
 		// the main parsing of the email occurs here
 		err := e.Parse()
 		if err != nil {
-			if errors.Is(err, emlParseIgnoreError) {
+			if errors.Is(err, parseIgnoreError) {
+				fmt.Printf("skipping email parsing error from %s\n", path)
 				if *verbose {
-					fmt.Println(" ", path)
-					fmt.Println("   ignoring eml parsing error", err)
+					fmt.Println("  ", err)
 				}
 				return nil
 			} else {
@@ -37,7 +40,7 @@ func walkerEML(path string, info os.FileInfo, err error) error {
 			}
 		}
 
-		// process eml and put addresses in addressMap
+		// process message and put addresses in addressMap
 		for _, a := range e.addrs {
 			if a.isDoNotReply {
 				continue
