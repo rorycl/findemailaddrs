@@ -2,8 +2,9 @@
 
 version 0.0.4 : 05 November 2023
 
-Find email files on disk (by default `.eml` files) and parse the headers
-of these and extract them to a tab separated value (tsv) file.
+Find email files on disk (by default `.eml` files) and parse the email
+of each file and extract the sender, to and cc email addresses and save
+these to a tab separated value (tsv) file removing duplicates.
 
 ## Example
 
