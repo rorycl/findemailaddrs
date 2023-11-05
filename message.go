@@ -2,11 +2,9 @@
 package main
 
 import (
-	"encoding/csv"
 	"errors"
 	"fmt"
 	"os"
-	"slices"
 	"strings"
 	"time"
 
@@ -28,55 +26,13 @@ type address struct {
 	email        string
 	seen         int
 	date         time.Time
-	colleague    bool
 	isDoNotReply bool // is a "do not reply" address
 }
 
 // addressStringSlice is a slice of string for outputting to tab
 // separated formate
 func (a *address) stringSlice() []string {
-	colBool := "false"
-	if a.colleague {
-		colBool = "true"
-	}
-	return []string{a.name, a.email, a.date.Format("2006-01-02"), colBool}
-}
-
-// addressMap keeps a map of unique addresses by lowercase email address
-// addresses with isDoNotReply true are omitted
-type addressMap map[string]address
-
-// count returns the number of unique addresses
-func (am addressMap) count() int {
-	return len(am)
-}
-
-// dump writes the address map to an export tsf file
-func (am addressMap) dump(f *os.File) error {
-
-	// sort
-	keys := []string{}
-	for k := range am {
-		keys = append(keys, k)
-	}
-	slices.Sort(keys)
-
-	writer := csv.NewWriter(f)
-	writer.Comma = '\t'
-
-	// write out addresses
-	err := writer.Write([]string{"name", "email", "updated", "colleague"})
-	if err != nil {
-		return err
-	}
-	for _, k := range keys {
-		v := am[k]
-		if err := writer.Write(v.stringSlice()); err != nil {
-			return err
-		}
-	}
-	return nil
-
+	return []string{a.name, a.email, a.date.Format("2006-01-02")}
 }
 
 // String is a string representation of an email message
@@ -130,9 +86,6 @@ func (e *email) Parse() error {
 		}
 		if strings.Contains(strings.ToLower(addr.name), "undisclosed") {
 			continue
-		}
-		if strings.Contains(strings.ToLower(addr.email), "ucl.ac.uk") {
-			addr.colleague = true
 		}
 		e.addrs = append(e.addrs, addr)
 	}

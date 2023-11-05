@@ -7,9 +7,6 @@ import (
 	"path/filepath"
 )
 
-// map of addresses to address struct
-var am = addressMap{}
-
 // default search file extension
 var searchSuffix = ".eml"
 
@@ -80,10 +77,21 @@ func main() {
 	}
 	defer outputFile.Close()
 
+	// walk the filesystem
 	err = filepath.Walk(*directory, walkerFindEmails)
 	if err != nil {
-		fmt.Println("error: ", err)
+		fmt.Println("walk error:", err)
+		os.Exit(1)
 	}
+
+	// process the files found walking
+	am, err := processFiles(files)
+	if err != nil {
+		fmt.Println("process error:", err)
+		os.Exit(1)
+	}
+
+	// write the tsv file
 	err = am.dump(outputFile)
 	if err != nil {
 		fmt.Println(err)

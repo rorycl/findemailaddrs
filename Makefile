@@ -7,6 +7,9 @@ GO_VERSION := 1.21  # <1>
 
 COVERAGE_AMT := 60  # should be 80
 
+test:
+	go test ./...
+
 build:
 	go test ./... && echo "---ok---" && go build 
 
@@ -32,5 +35,5 @@ module-update-tidy:
 	go get -u ./...
 	go mod tidy
 
-check: check-format check-vet lint
+check: test check-format check-vet lint
 

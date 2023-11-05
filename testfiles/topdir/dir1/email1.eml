@@ -1,0 +1,79 @@
+From xxxxxxx@gmail.com Sat Nov  4 23:04:49 2023
+Return-path: <xxxxxxx@gmail.com>
+Envelope-to: xxxx@test.net
+Delivery-date: Sat, 04 Nov 2023 23:04:49 +0000
+Received: from mail-ed1-f53.google.com ([209.85.208.53])
+	by test.net with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96)
+	(envelope-from <xxxxxxx@gmail.com>)
+	id 1qzPhB-005CgV-1J
+	for xxxx@test.net;
+	Sat, 04 Nov 2023 23:04:49 +0000
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-544455a4b56so1268670a12.1;
+        Sat, 04 Nov 2023 16:04:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699139088; x=1699743888; darn=test.net;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=6iy3R9SbA9SyNJfF7PsxdnPPA2iZs00284ldtuWkEn0=;
+        b=IMrtx68entgm108ysiWsqt32tRw1qALEim8Rtz8uMH3LXDlOI9sOoIZ6qrYHPZ0kD2
+         rkKEDmlTSPd+NBkSj6oV8PJ44fIgMsehc8jAu5ap+JpZzVTvSVPHaQRuw74tCAbFpT84
+         o3vV0vcbYy1jZ0mK0KzKMpZcLILMeh9l/qjJz9WVF7VvVYBsva2Hb7PYACTMRb2IpSvx
+         FnW4H7rpbRAs/A+FB4A9CITpJwtfmrVblIDZD9GwREREc2y5VqefWebNcnE6ytS/HUpJ
+         vHv8P9TMopJEnbXei4UQmBVTzgAmCedRziFjtvcQMAB7M/LsSGQAa+Gk8Pn2ZqnlOqXH
+         kgeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699139088; x=1699743888;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6iy3R9SbA9SyNJfF7PsxdnPPA2iZs00284ldtuWkEn0=;
+        b=eIAvv3M88XKF4k+2Yh1fTLq2HvEfEyMBnde6UacDDT3MMlljKHiH86ueboRTEtD8bs
+         WaranQ9BQOH55ixixclBuT7MvMMs+OMjl/EKnv74NFD/HP4G1gJql4s4JYwyo0a6vFtS
+         RhktU2rr1YKP/l/d5t9opaA2/kGeJ+Ble3ydoSL6FAx/CPmrSeiUIoR8+kWHjkvgMenu
+         +jkNV5dreZpZKb4DgwYIYWifePlie2vxbLUXsEx/Ubk97JOTl9/FGQLzgNZijrqa7TL1
+         xtd5gqiVu2wAYFzIvTTDFqs9pS0hsoZoZXzgw0DchyDQBJDqofWRYaGZ8d+rSJQrPPho
+         VVeQ==
+X-Gm-Message-State: AOJu0YynMYVusytjw5uJ4XpHdc11lHJPhTXZLnUJrtbxvvDFt6X7NS4q
+	7dGTBGFztBZq13qMJSpVS3v3JcpSqvdoxTKeKQytIN30gM4=
+X-Google-Smtp-Source: AGHT+IEmREqsU+dY/YATtJJQRI4XFpAXIkaxKwY97yuOMlJTv932vuIxVvm99Hmx5vE9Wnb8k9vqTpsiucWRtv43qtM=
+X-Received: by 2002:a50:d49e:0:b0:543:5741:c9cd with SMTP id
+ s30-20020a50d49e000000b005435741c9cdmr12848805edi.34.1699139088306; Sat, 04
+ Nov 2023 16:04:48 -0700 (PDT)
+MIME-Version: 1.0
+From: Xxxx Xxxxxxxxxxxxxx <xxxxxxx@gmail.com>
+Date: Sat, 4 Nov 2023 23:04:37 +0000
+Message-ID: <CAPQX7QTsz5QnN3RmrmY1xMNiu=DQ1bupjk0UTZQmTJLfaOAo6Q@mail.gmail.com>
+Subject: This is a test email (1)
+To: Xxxx Xxxxxxxxxxxxxx <xxxx@test.net>
+Cc: example@test.net
+Content-Type: multipart/alternative; boundary="000000000000c857d206095ba5cb"
+X-Spam-Score: 2.6 (++)
+Content-Length: 1370
+
+--000000000000c857d206095ba5cb
+Content-Type: text/plain; charset="UTF-8"
+
+As error message suggests, We can use cmp.AllowUnexported function. The
+important point here is as parameter we should use the type which *CONTAINS
+unexported field*, not the type of the unexported field.
+
+So last line should be changed like this:
+
+result := cmp.Equal(t1, t2, cmp.AllowUnexported(Mytype{}))
+
+Also note that cmp.AllowUnexported doesn't work recursively for subtypes.
+If you have subtypes which contains unexported fields, you have to
+explicitly pass them.
+
+--000000000000c857d206095ba5cb
+Content-Type: text/html; charset="UTF-8"
+
+<div dir="ltr"><div class="gmail-s-prose gmail-js-post-body">
+<p>As error message suggests, We can use <code>cmp.AllowUnexported</code> function. The important point here is as parameter we should use the type which <strong>CONTAINS unexported field</strong>, not the type of the unexported field.</p>
+<p>So last line should be changed like this:</p>
+<pre class="gmail-lang-golang gmail-s-code-block"><code class="gmail-hljs gmail-language-go">result := cmp.Equal(t1, t2, cmp.AllowUnexported(Mytype{}))
+</code></pre>
+<p>Also note that <code>cmp.AllowUnexported</code> doesn&#39;t work recursively for subtypes. If you have subtypes which contains unexported fields, you have to explicitly pass them.</p></div></div>
+
+--000000000000c857d206095ba5cb--
+

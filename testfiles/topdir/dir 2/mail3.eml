@@ -1,0 +1,111 @@
+From xxxxyyy@gmail.com Sat Nov  4 23:07:21 2023
+Return-path: <xxxxyyy@gmail.com>
+Envelope-to: xxxx@test.net
+Delivery-date: Sat, 04 Nov 2023 23:07:21 +0000
+Received: from mail-lf1-f49.google.com ([209.85.167.49])
+	by test.net with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96)
+	(envelope-from <xxxxyyy@gmail.com>)
+	id 1qzPjZ-005ChB-39
+	for xxxx@test.net;
+	Sat, 04 Nov 2023 23:07:21 +0000
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-507d1cc0538so4361764e87.2;
+        Sat, 04 Nov 2023 16:07:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699139236; x=1699744036; darn=test.net;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=DydNM3hpe+PI1AYepZCFJQ6e58cV1EgYiI3HhEgkTTU=;
+        b=aHBHVzLThfBns3FWH74nj/smUGa380TIGdU8h6v2gth2xc1A4ChPaq1N/VzKajlU/0
+         t4LG0BqrehAfxHUTTyigeS7XPRa9MuISDG7lXuBURPliCAneXcQ2jsSmHOd8Sxr31mXz
+         RKJ1QMcg8JcEj7hSSzXlpLk+wfh0C0HsomoXEGd85LOE+nnUYBy1W1x9opJvGQRCRH4M
+         g7EZDndT90UzliXqjOav71z0ckXwbKG7jtKmrmbn+3WiZB2pwZlDwuclzeS4Jn1NsKZm
+         wIaVsNX1wsD8EBWX2SG6dmbVB0ofmOtyppHoC+ki72vp2VXe3Mm7Hph7/BZJuiuy4QEE
+         OBaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699139236; x=1699744036;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DydNM3hpe+PI1AYepZCFJQ6e58cV1EgYiI3HhEgkTTU=;
+        b=jrUfmoz2Y6SHE6r7xOnukArdvcdHyQO3k3B6UQ5sLRVWQ5deslyzq4LuBB+M7qo29/
+         XwX/y/3UX0M9UBNZVJU8qeAMwVJjGqkci3CniP7tPI2bUVKJokLEp68WzmcN4ddjZouz
+         c/KTSm6/4HLFmdbVsEkEzeb1hl8atfBALt/3IDBNcNRIkI+6rkgwbDi9dy6ei+8vk9cf
+         SumiLOoZK0LnI/4wxyaSeLMeoeUZBb8X7yIM3Wc3QuRCwf983Sar9qk2HqmlnsC4Png2
+         pj7NaO3NmrCW/NU0cuzPZJ6tV1Y7iElSL5vq5S7NPdZJzIpc3Lk0wdIKSdzMBo8mSuQX
+         ig+g==
+X-Gm-Message-State: AOJu0Yxb+OpHe96vGJJZz1da1C/H+LW/M6daiyb7SUUDH2Om8vNc9YD8
+	BiDW2SckX26sTx9RuD/tfypA3yXLKD/CYM4f1IzNe+OKgxI=
+X-Google-Smtp-Source: AGHT+IFsCxtBgUIpt/jg68CMO88bLpI4WwxhhCrR1Cj+3klIOxL7dKVjuzyb8w7uAbpbsnmL2LDpjEiLhGvh67OjVsk=
+X-Received: by 2002:a05:6512:358e:b0:505:6cc7:e0f7 with SMTP id
+ m14-20020a056512358e00b005056cc7e0f7mr16341415lfr.44.1699139236225; Sat, 04
+ Nov 2023 16:07:16 -0700 (PDT)
+MIME-Version: 1.0
+From: Xxxx Xxxxxxxxxxxxxx <xxxxyyy@gmail.com>
+Date: Sat, 4 Nov 2023 23:07:03 +0000
+Message-ID: <CAPQX7QR-XTy3WCO0NN2UE+M=QWwxrdf1mL-tuSrOQV3fiCB_0Q@mail.gmail.com>
+Subject: This is a test email (3)
+To: Xxxx Xxxxxxxxxxxxxx <xxxx@test.net>
+Cc: test4@test.net, test5@test.net
+Content-Type: multipart/alternative; boundary="00000000000099676c06095bae3f"
+X-Spam-Score: -0.8 (/)
+Content-Length: 2323
+
+--00000000000099676c06095bae3f
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+ func EquateEmpty
+<https://github.com/google/go-cmp/blob/v0.6.0/cmp/cmpopts/equate.go#L24> =
+=C2=B6
+<https://pkg.go.dev/github.com/google/go-cmp/cmp/cmpopts#EquateEmpty>
+
+func EquateEmpty() cmp
+<https://pkg.go.dev/github.com/google/go-cmp@v0.6.0/cmp>.Option
+<https://pkg.go.dev/github.com/google/go-cmp@v0.6.0/cmp#Option>
+
+EquateEmpty returns a cmp.Comparer
+<https://pkg.go.dev/github.com/google/go-cmp@v0.6.0/cmp#Comparer> option
+that determines all maps and slices with a length of zero to be equal,
+regardless of whether they are nil.
+
+EquateEmpty can be used in conjunction with SortSlices
+<https://pkg.go.dev/github.com/google/go-cmp/cmp/cmpopts#SortSlices> and
+SortMaps <https://pkg.go.dev/github.com/google/go-cmp/cmp/cmpopts#SortMaps>
+.
+
+--00000000000099676c06095bae3f
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div class=3D"gmail-Documentation-function">
+	 =20
+ =20
+ =20
+    <h4 tabindex=3D"-1" id=3D"gmail-EquateEmpty" class=3D"gmail-Documentati=
+on-functionHeader">
+      func <a class=3D"gmail-Documentation-source" href=3D"https://github.c=
+om/google/go-cmp/blob/v0.6.0/cmp/cmpopts/equate.go#L24">EquateEmpty</a> <a =
+class=3D"gmail-Documentation-idLink" href=3D"https://pkg.go.dev/github.com/=
+google/go-cmp/cmp/cmpopts#EquateEmpty">=C2=B6</a>
+  <span class=3D"gmail-Documentation-sinceVersion">
+   =20
+  </span>
+</h4>
+
+   =20
+    <div class=3D"gmail-Documentation-declaration">
+      <pre>func EquateEmpty() <a href=3D"https://pkg.go.dev/github.com/goog=
+le/go-cmp@v0.6.0/cmp">cmp</a>.<a href=3D"https://pkg.go.dev/github.com/goog=
+le/go-cmp@v0.6.0/cmp#Option">Option</a></pre>
+    </div>
+  <p>EquateEmpty returns a <a href=3D"https://pkg.go.dev/github.com/google/=
+go-cmp@v0.6.0/cmp#Comparer">cmp.Comparer</a> option that determines all map=
+s and slices
+with a length of zero to be equal, regardless of whether they are nil.
+</p><p>EquateEmpty can be used in conjunction with <a href=3D"https://pkg.g=
+o.dev/github.com/google/go-cmp/cmp/cmpopts#SortSlices">SortSlices</a> and <=
+a href=3D"https://pkg.go.dev/github.com/google/go-cmp/cmp/cmpopts#SortMaps"=
+>SortMaps</a>.=C2=A0</p></div></div>
+
+--00000000000099676c06095bae3f--
+

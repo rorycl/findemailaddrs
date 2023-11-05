@@ -1,0 +1,79 @@
+From xxxxxxx@gmail.com Sat Nov  4 23:06:13 2023
+Return-path: <xxxxxxx@gmail.com>
+Envelope-to: xxxx@test.net
+Delivery-date: Sat, 04 Nov 2023 23:06:13 +0000
+Received: from mail-ed1-f44.google.com ([209.85.208.44])
+	by test.net with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96)
+	(envelope-from <xxxxxxx@gmail.com>)
+	id 1qzPiW-005Cgr-1c
+	for xxxx@test.net;
+	Sat, 04 Nov 2023 23:06:13 +0000
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-53e08e439c7so5554615a12.0;
+        Sat, 04 Nov 2023 16:06:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699139172; x=1699743972; darn=test.net;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=HItHlFcNeBmBV57sk5tnlgobrhMYfKTIbelkNk3pmfU=;
+        b=X1i24TW9lzRK6sRn/tN1gRmpWrYrjAFijsrfpxbpV/HBB45Ou0grgIQEldQl/+5/bC
+         46q0OxOsFFOciJJtVB3B3QkYYTgt4o24omhuEadg4uUdHe5Q67PdegR3jOLSgN/GATGh
+         xDfbuysCqtxrL1e3M0PKg4sy9ibP/zR8zRgq4aplVmpnq3RbV0j0qOq44seKejYKMb8W
+         4Xd0XoNB09bl6W15NCjcK3+Uwi4rJB3xxPIxNnl0SRNw04Qf6ttg0bbAcy0eVX+0aVEw
+         2bn6vyHzUoXsT+udf9Yk3F+qDkgKYX+ErF6HalI87Pa+lviCmdiVDmFigiMPDf6R1Uqg
+         o3WQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699139172; x=1699743972;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HItHlFcNeBmBV57sk5tnlgobrhMYfKTIbelkNk3pmfU=;
+        b=LunTNYkigVOsaLCCiDLChcvYqS9MYR1vY/DjGnZhwYt44qCqSjHfNdlsGbzKhtQCwg
+         tC3bV7JKSFtCE6VgSXfv5Q3AFbSksGdZc+wpBB31AxX8vScu6QyVLNe0ZM5a84ASvE8G
+         3HKg4tPODiSgUqhb/faVIV0yxvwgXjd3ABA/CTBev7MSeSxucqNLOyY/i8ajyOvPV+5D
+         9pfCM3aFRVvFDRHyg179cYs+ut6GDUp0dLAK8ausja4vcHv7KF8U//QsR/slvFsShtY1
+         0T8mpnj0/oMf6E57Q2Cb3WYiS+CGMRYCQvo/fLP2KjDd2GP8NA8Nllrlv260/E+uhiYK
+         gPig==
+X-Gm-Message-State: AOJu0YzZHz0F9EFIprb6HQWWCZ2Af9QIBzQNodsoUZmJj9cpqWxvkChn
+	GnzEdvVEMyOgDw7E9zU/LW4kkIwociF63gYzJ1c/G50CBUs=
+X-Google-Smtp-Source: AGHT+IHJ1YlrOPmZwx3IHU+VKDvgscpgOZXVj4CT5MM8xZ5bvo0iWTTz7MJvvPQl+5h3flt5bODOsVSS27lwjFdLa4w=
+X-Received: by 2002:a50:ab4f:0:b0:53e:2e74:7e0c with SMTP id
+ t15-20020a50ab4f000000b0053e2e747e0cmr22428568edc.24.1699139171770; Sat, 04
+ Nov 2023 16:06:11 -0700 (PDT)
+MIME-Version: 1.0
+From: xxxx Xxxxxxxxxxxxxx <xxxxxxx@gmail.com>
+Date: Sat, 4 Nov 2023 23:06:00 +0000
+Message-ID: <CAPQX7QQStH1zjNkR8E27954S9n2fXc8a9LWzBC7SnrJ_Tdkvgg@mail.gmail.com>
+Subject: This is a test email (2)
+To: xxxx Xxxxxxxxxxxxxx <xxxx@test.net>
+Cc: test3@test.net, Zanzibar Parisian <zparisian@testanother.com>
+Content-Type: multipart/alternative; boundary="000000000000c1e34406095baa0a"
+X-Spam-Score: -0.8 (/)
+Content-Length: 1439
+
+--000000000000c1e34406095baa0a
+Content-Type: text/plain; charset="UTF-8"
+
+EquateComparable returns a cmp.Option
+<https://pkg.go.dev/github.com/google/go-cmp@v0.6.0/cmp#Option> that
+determines equality of comparable types by directly comparing them using
+the == operator in Go. The types to compare are specified by passing a
+value of that type. This option should only be used on types that are
+documented as being safe for direct == comparison. For example,
+net/netip.Addr <https://pkg.go.dev/net/netip#Addr> is documented as being
+semantically safe to use with ==, while time.Time
+<https://pkg.go.dev/time#Time> is documented to discourage the use of == on
+time values.
+
+--000000000000c1e34406095baa0a
+Content-Type: text/html; charset="UTF-8"
+
+<div dir="ltr">EquateComparable returns a <a href="https://pkg.go.dev/github.com/google/go-cmp@v0.6.0/cmp#Option">cmp.Option</a> that determines equality
+of comparable types by directly comparing them using the == operator in Go.
+The types to compare are specified by passing a value of that type.
+This option should only be used on types that are documented as being
+safe for direct == comparison. For example, <a href="https://pkg.go.dev/net/netip#Addr">net/netip.Addr</a> is documented
+as being semantically safe to use with ==, while <a href="https://pkg.go.dev/time#Time">time.Time</a> is documented
+to discourage the use of == on time values.<br></div>
+
+--000000000000c1e34406095baa0a--
+
