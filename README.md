@@ -1,6 +1,6 @@
 # findemailaddrs
 
-version 0.0.3 : 04 November 2023
+version 0.0.4 : 05 November 2023
 
 Find email files on disk (by default `.eml` files) and parse the headers
 of these and extract them to a tab separated value (tsv) file.
