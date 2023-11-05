@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"os"
 	"slices"
 	"testing"
 
@@ -21,25 +23,29 @@ func TestProcess(t *testing.T) {
 		"zparisian@testanother.com",
 	}
 
-	am, err := processFiles(
-		[]emailFile{
-			emailFile{
-				name: "mail1.eml",
-				path: "testfiles/topdir/dir1/email1.eml",
-			},
-			emailFile{
-				name: "mail2.eml",
-				path: "testfiles/topdir/dir1/email2.eml",
-			},
-			emailFile{
-				name: "mail3.eml",
-				path: "testfiles/topdir/dir 2/mail3.eml",
-			},
-		},
-	)
-	if err != nil {
-		t.Fatal(err)
-	}
+	// needed for walkerFindEmails
+	fileChan = make(chan string)
+
+	// 1. get files to process
+	fChan := walker("testfiles/topdir")
+
+	// 2. process files
+	emailChan, errorChan := processEmail(fChan)
+
+	// 3. launch and complete digester
+	am := addressMap{}
+	done := make(chan struct{})
+	go func() {
+		var err error
+		am, err = processUniqueEmails(emailChan, errorChan)
+		if err != nil {
+			fmt.Println("process error:", err)
+			os.Exit(1)
+		}
+		done <- struct{}{}
+	}()
+	<-done
+
 	keys := []string{}
 	for k := range am {
 		keys = append(keys, k)

@@ -41,58 +41,63 @@ func (am addressMap) dump(f *os.File) error {
 			return err
 		}
 	}
+	writer.Flush()
 	return nil
 }
 
 var counter int = 0
 
-// processFiles processes all the files found in walkerFindEmails
-func processFiles(files []emailFile) (addressMap, error) {
+// processUniqueEmails processes emails into a unique map
+func processUniqueEmails(emailChan <-chan email, errorChan <-chan email) (addressMap, error) {
 
 	am := addressMap{}
 
-	for _, f := range files {
+EMAIL:
+	for {
+		select {
 
-		// make an enail record
-		e := email{
-			name: f.name,
-			path: f.path,
-		}
-
-		// parse the email
-		err := e.Parse()
-		if err != nil {
-			if errors.Is(err, parseIgnoreError) {
+		// read off errors from processEmail
+		case e, ok := <-errorChan:
+			if !ok {
+				break EMAIL
+			}
+			if errors.Is(e.err, parseIgnoreError) {
 				fmt.Printf("skipping email parsing error from %s\n", e.path)
 				if *verbose {
-					fmt.Println("  ", err)
+					fmt.Println("  ", e.err)
 				}
 				continue
 			} else {
-				return am, err
+				// unrecoverable error
+				return am, e.err
 			}
-		}
 
-		// process message and add addresses in addressMap
-		for _, a := range e.addrs {
-			if a.isDoNotReply {
-				continue
+		// read off emails from processEmail
+		case e, ok := <-emailChan:
+			if !ok {
+				break EMAIL
 			}
-			email := strings.ToLower(a.email)
-			existing, ok := am[email]
-			if ok {
-				existing.seen++
-				if existing.name == "" && a.name != "" {
-					existing.name = a.name
+			// process message and add addresses in addressMap
+			for _, a := range e.addrs {
+				if a.isDoNotReply {
+					continue
 				}
-				if existing.date.Before(a.date) {
-					existing.date = a.date
+				email := strings.ToLower(a.email)
+				existing, ok := am[email]
+				if ok {
+					existing.seen++
+					if existing.name == "" && a.name != "" {
+						existing.name = a.name
+					}
+					if existing.date.Before(a.date) {
+						existing.date = a.date
+					}
+				} else {
+					am[email] = a
 				}
-			} else {
-				am[email] = a
 			}
+			counter++
 		}
-		counter++
 	}
 	return am, nil
 }

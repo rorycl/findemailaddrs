@@ -3,19 +3,9 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 )
-
-// emailFile points to a file containing emails on disk
-type emailFile struct {
-	name, path string
-}
-
-// files stores the found email files
-var files []emailFile
-
-// started checks the first input path is valid
-var started bool
 
 // check directory exists
 func checkDirExists(dir string) bool {
@@ -35,14 +25,27 @@ func checkDirExists(dir string) bool {
 	return true
 }
 
+// fileChan is a chan of file paths
+var fileChan = make(chan string)
+
+// Exiter indirect os.Exit
+var Exiter = os.Exit
+
+// walker generates a go routine
+func walker(directory string) <-chan string {
+	go func() {
+		defer close(fileChan)
+		err := filepath.Walk(directory, walkerFindEmails)
+		if err != nil {
+			fmt.Println("walk error:", err)
+			Exiter(1)
+		}
+	}()
+	return fileChan
+}
+
 // walkerFindEmails is a custom file walker for eml files
 func walkerFindEmails(path string, info os.FileInfo, err error) error {
-	if !started {
-		if !checkDirExists(path) {
-			return fmt.Errorf("directory %s does not exist", path)
-		}
-		started = true
-	}
 
 	if *verbose && info.IsDir() {
 		fmt.Println("processing directory:", info.Name())
@@ -52,10 +55,7 @@ func walkerFindEmails(path string, info os.FileInfo, err error) error {
 		if *verbose {
 			fmt.Println("   file:", info.Name())
 		}
-		files = append(files, emailFile{
-			name: info.Name(),
-			path: path,
-		})
+		fileChan <- path // fileChan is declared at package level
 	}
 	return nil
 }

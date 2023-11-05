@@ -5,7 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/mnako/letters"
@@ -18,6 +20,7 @@ type email struct {
 	path  string // full path to file
 	addrs []address
 	date  time.Time
+	err   error
 }
 
 // address is an email address with optional name
@@ -30,7 +33,7 @@ type address struct {
 }
 
 // addressStringSlice is a slice of string for outputting to tab
-// separated formate
+// separated format
 func (a *address) stringSlice() []string {
 	return []string{a.name, a.email, a.date.Format("2006-01-02")}
 }
@@ -48,9 +51,39 @@ func (e email) String() string {
 	return r
 }
 
+// processEmail processes email from paths provided by fileChan
+func processEmail(fileChan <-chan string) (<-chan email, <-chan email) {
+
+	emailChan := make(chan email)
+	errorChan := make(chan email)
+
+	go func() {
+		defer close(emailChan)
+		defer close(errorChan)
+		var wg sync.WaitGroup
+		for f := range fileChan {
+			file := f
+			wg.Add(1)
+			go func(file string) {
+				defer wg.Done()
+				e := email{path: file, name: path.Base(file)}
+				e.err = e.Parse()
+				if e.err != nil {
+					errorChan <- e
+				} else {
+					emailChan <- e
+				}
+			}(file)
+		}
+		wg.Wait()
+	}()
+	return emailChan, errorChan
+}
+
+// parseIgnoreError is an email parsing error that can be ignored
 var parseIgnoreError error = errors.New("handled parsing error")
 
-// parse an email message using letter , catching errors
+// parse an email message, catching errors
 func (e *email) Parse() error {
 	if e == nil {
 		return errors.New("nil email provided")
