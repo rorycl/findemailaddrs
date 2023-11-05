@@ -1,10 +1,12 @@
 # findemailaddrs
 
-version 0.0.4 : 05 November 2023
+version 0.0.5 : 08 November 2023
 
 Find email files on disk (by default `.eml` files) and parse each to
 extract the sender, to and cc addresses then save these to a tab
 separated value (tsv) file removing duplicates.
+
+Release v0.0.5 uses goroutines for much faster processing of files.
 
 ## Example
 

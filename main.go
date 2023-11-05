@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"path/filepath"
 )
 
 // default search file extension
@@ -77,28 +76,34 @@ func main() {
 	}
 	defer outputFile.Close()
 
-	// walk the filesystem
-	err = filepath.Walk(*directory, walkerFindEmails)
-	if err != nil {
-		fmt.Println("walk error:", err)
-		os.Exit(1)
-	}
+	// 1. get files to process
+	fileChan := walker(*directory)
 
-	// process the files found walking
-	am, err := processFiles(files)
-	if err != nil {
-		fmt.Println("process error:", err)
-		os.Exit(1)
-	}
+	// 2. process files
+	emailChan, errorChan := processEmail(fileChan)
 
-	// write the tsv file
+	// 3. launch and complete digester
+	am := addressMap{}
+	done := make(chan struct{})
+	go func() {
+		var err error
+		am, err = processUniqueEmails(emailChan, errorChan)
+		if err != nil {
+			fmt.Println("process error:", err)
+			os.Exit(1)
+		}
+		done <- struct{}{}
+	}()
+	<-done
+
+	//  4. write the tsv file
 	err = am.dump(outputFile)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	// stats
+	// 5. show stats
 	if *verbose {
 		fmt.Println("counter", counter)
 		fmt.Println("unique addresses", am.count())
