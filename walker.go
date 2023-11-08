@@ -8,6 +8,7 @@ import (
 )
 
 // check directory exists
+/*
 func checkDirExists(dir string) bool {
 	d, err := os.Open(dir)
 	if err != nil {
@@ -23,6 +24,26 @@ func checkDirExists(dir string) bool {
 		return false
 	}
 	return true
+}
+*/
+
+// fileChan is a chan of file paths
+var fileChan = make(chan string)
+
+// Exiter indirect os.Exit
+var Exiter = os.Exit
+
+// walker generates a go routine
+func walker(directory string) <-chan string {
+	go func() {
+		defer close(fileChan)
+		err := filepath.Walk(directory, walkerFindEmails)
+		if err != nil {
+			fmt.Println("walk error:", err)
+			Exiter(1)
+		}
+	}()
+	return fileChan
 }
 
 // fileChan is a chan of file paths
